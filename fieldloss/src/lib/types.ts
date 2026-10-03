@@ -1,0 +1,48 @@
+export type Country = "AU" | "FJ";
+export type Commodity = "tomatoes" | "bananas" | "taro";
+export type Stage = "handling" | "storage" | "transport";
+export type Unit = "kg" | "g" | "tonnes" | "crates" | "unknown";
+export type Destination = "discarded" | "composted" | "donated" | "resold" | "animal_feed" | "productive_use" | "unknown";
+export type Measurement = "weighed" | "estimated" | "unknown";
+export type Context = { country: Country; commodity: Commodity; stage: Stage; date: string; location: string };
+export type Quantity = { amount: number | null; unit: Unit; kgPerCrate: number | null };
+export type Allocation = { destination: Destination; quantity: Quantity };
+export type Evidence = Partial<Record<"incoming" | "affected" | "cause" | "allocations" | "commodity" | "stage", string>>;
+export type Draft = {
+  id: string;
+  context: Context;
+  transcript: string;
+  incoming: Quantity;
+  affected: Quantity;
+  allocations: Allocation[];
+  cause: string | null;
+  measurement: Measurement;
+  evidence: Evidence;
+  detectedContext: { country: Country | null; commodity: Commodity | null; stage: Stage | null };
+  acknowledgedConflicts: string[];
+};
+export type Issue = { field: string; message: string; kind: "missing" | "invalid" | "conflict" };
+export type Evaluation = { issues: Issue[]; incomingKg: number | null; affectedKg: number | null; lossKg: number | null; lossPercent: number | null };
+export type ConfirmedRecord = {
+  id: string;
+  context: Context;
+  transcript: string;
+  incomingKg: number;
+  affectedKg: number;
+  allocations: { destination: Destination; kg: number }[];
+  lossKg: number;
+  lossPercent: number;
+  cause: string | null;
+  measurement: Measurement;
+  evidence: Evidence;
+  confirmedAt: string;
+  isSample: boolean;
+};
+export type BenchmarkMode = "manual" | "assisted";
+export type BenchmarkTrial = { id: string; scenarioId: string; mode: BenchmarkMode; inputMethod: "voice" | "text" | "manual"; elapsedMs: number; correct: boolean; errors: string[]; completedAt: string };
+export type StoredState = { schemaVersion: 1; draft: Draft | null; records: ConfirmedRecord[]; trials: BenchmarkTrial[] };
+
+export const COUNTRIES: Record<Country, string> = { AU: "Australia", FJ: "Fiji" };
+export const COMMODITIES: Record<Commodity, string> = { tomatoes: "Tomatoes", bananas: "Bananas", taro: "Taro" };
+export const STAGES: Record<Stage, string> = { handling: "Post-harvest handling", storage: "Storage", transport: "Transport" };
+export const DESTINATIONS: Record<Destination, string> = { discarded: "Discarded", composted: "Composted", donated: "Donated", resold: "Sold elsewhere", animal_feed: "Animal feed", productive_use: "Other productive use", unknown: "Destination unknown" };

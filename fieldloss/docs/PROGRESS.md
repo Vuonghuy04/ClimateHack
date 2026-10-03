@@ -1,0 +1,26 @@
+# Execution ledger — docs/BUILD_PLAN.md
+
+- Workspace: new isolated project folder selected explicitly by the user; parent has no Git repository. No worktree or unrelated files to modify.
+- Pre-flight: capture/extraction share Draft types; manual/assisted entry share validation and calculations; records and benchmark share versioned persistence but benchmark never writes operational records.
+- [x] Core records, validation and calculation (17 tests watched fail before implementation, then pass)
+- [x] Live AI endpoints and intake (strict extraction, server validation, safe failure; provider rehearsal pending key)
+- [x] Flat capture/review/result interface (initial browser acceptance tests RED→GREEN)
+- [x] Records, storage, CSV and benchmark (26 core/integration tests; 6 API boundary tests pass)
+- [x] Browser checks, production verification and final review (live provider/human rehearsal remains pending private key configuration)
+- Live AI key: not present in the process at initial inspection; configure `.env.local` privately.
+- Initial browser verification: 4/4 passed, including 14.2% compost, 0% donation, persistence/CSV, benchmark isolation and responsive capture.
+- One failed browser check was caused by optional text in the cause label. The plain label now matches the visible field name; the benchmark flow passes.
+- Expanded verification: 40/40 Vitest tests and 15/15 Playwright browser scenarios passed. The installed OpenAI SDK was exercised with intercepted HTTP responses, checking strict Responses format, transcription multipart input and safe authentication errors.
+- Final review: one fresh read-only reviewer; no Critical or Minor findings. Four Important findings reproduced before fixes.
+- Final: fixed re-recording retaining prior evidence — voice replacement/extraction-failure/reload test RED→GREEN.
+- Final: fixed stale tabs overwriting saved records and trials — two-tab persistence test RED→GREEN; serialized Web Lock writes merge current stored data. Confirmation waits for persistence.
+- Final: fixed manual benchmark switching to AI — manual-only trial test RED→GREEN; mode guard and capture restriction preserve the baseline.
+- Final: fixed context changes retaining old acknowledgements — changed-context test RED→GREEN.
+- Final: fixed floating-point 100% allocation overflow and disproportionate tiny masses — calculation test RED→GREEN.
+- Final: fixed changed records reusing a confirmed identifier — immutable-record test RED→GREEN; identical repeated confirmations remain idempotent.
+- Final review rulings: live provider accuracy and API-key availability remain configuration-dependent, not code defects; physical microphone and suspended-browser duration behavior were not exercised; cloud/auth/photos/official FLI/deployment hardening remain deferred; full screen-reader certification was not performed. Costs if these boundaries are overlooked: unsupported live accuracy/accessibility claims or expectations beyond this local demo.
+- Production verification: final optimized build passed; all 15 browser scenarios passed against `next start`; all three pages and actual API validation/unconfigured-key fallback passed. Client bundles contain no API-key environment variable or test placeholder. Production server left running at http://127.0.0.1:3000.
+- Visual verification: capture, review, Records and Benchmark screenshots generated at 375/768/1440px; representative desktop/mobile screenshots inspected. Flat tokens, local Public Sans, native controls and responsive layouts are in place.
+- Delivery: project preserved in the explicitly selected local folder. No Git repository or remote exists, so branch integration and publishing are not applicable.
+- Live provider and five human paired timings are deliberately not claimed: `/api/status` reports `configured: false`. Private `.env.local` configuration and the README rehearsal steps remain the required next action.
+- Repository handoff: the user subsequently requested committing and pushing the complete source to `Vuonghuy04/ClimateHack`. The target repository was verified empty with default branch `main`; a local repository and root setup guide were added, preserving the `fieldloss/` application directory and excluding secrets, dependencies and generated artifacts.
