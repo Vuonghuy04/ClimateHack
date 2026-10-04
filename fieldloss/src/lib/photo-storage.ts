@@ -1,0 +1,5 @@
+const DB_NAME = "fieldloss-photo-sources";
+const STORE = "images";
+function database() { return new Promise<IDBDatabase>((resolve, reject) => { const request = indexedDB.open(DB_NAME, 1); request.onupgradeneeded = () => request.result.createObjectStore(STORE); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }
+export async function savePhotoBlob(id: string, blob: Blob) { const db = await database(); await new Promise<void>((resolve, reject) => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).put(blob, id); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); }); db.close(); }
+export async function getPhotoBlob(id: string) { const db = await database(); const result = await new Promise<Blob | null>((resolve, reject) => { const request = db.transaction(STORE, "readonly").objectStore(STORE).get(id); request.onsuccess = () => resolve(request.result instanceof Blob ? request.result : null); request.onerror = () => reject(request.error); }); db.close(); return result; }
