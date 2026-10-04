@@ -13,6 +13,17 @@ function candidate(id: string, unresolvedFields: CandidateCanonicalRecord["unres
 function batch(candidates: CandidateCanonicalRecord[]): ImportBatch { return { id: "sheet", datasetName: "Spreadsheet", originalFilename: "survey.xlsx", fileType: "xlsx", sheetName: "Results", organisation: null, country: "Fiji", reportingYear: 2026, sourceType: "other", notes: null, importedAt: "2026-01-01T00:00:00.000Z", headers: [{ id: "a", label: "a", originalLabel: "a", sourceIndex: 0 }], rawRows: [], status: "validation-required", parseWarnings: [], mapping: null, candidates }; }
 
 describe("Evidence gap detector", () => {
+  it("keeps separate missing-field tasks uniquely identifiable across recalculation", () => {
+    const spreadsheet = source("import:sheet", "xlsx");
+    const item = candidate("candidate", ["destination", "incomingAmount", "incomingUnit"]);
+    const before = state([], [spreadsheet], [requirement()], { imports: [batch([item])] });
+    const gaps = detectEvidenceGaps(before, "FJ").gaps;
+    expect(gaps.filter((gap) => gap.type === "missing-field")).toHaveLength(4);
+    expect(new Set(gaps.map((gap) => gap.id)).size).toBe(gaps.length);
+    const after = detectEvidenceGaps({ ...before, imports: [batch([{ ...item, unresolvedFields: [...item.unresolvedFields].reverse() }])] }, "FJ").gaps;
+    expect(after.map((gap) => gap.id).sort()).toEqual(gaps.map((gap) => gap.id).sort());
+  });
+
   it("reports a high-priority missing requirement and moves it to partial after evidence arrives", () => {
     const high = requirement({ priorityWeight: 3, targetObservations: 2 }); const empty = state([], [], [high]); expect(detectEvidenceGaps(empty, "FJ").gaps[0].title).toContain("evidence missing");
     const sourceOne = source("one"); const partial = detectEvidenceGaps(state([record("one", sourceOne)], [sourceOne], [high]), "FJ"); expect(partial.gaps.some((gap) => gap.title.startsWith("Additional"))).toBe(true);
