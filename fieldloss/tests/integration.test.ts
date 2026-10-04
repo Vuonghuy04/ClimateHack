@@ -49,10 +49,12 @@ describe("extraction as a draft, not trusted final data", () => {
 
 describe("local persistence and export", () => {
   it("restores records, draft and benchmark trials through a versioned round trip", () => {
-    const state: StoredState = { schemaVersion: 1, draft: createDraft(), records: [record()], trials: [] };
+    const state: StoredState = { schemaVersion: 1, draft: createDraft(), records: [record()], trials: [], imports: [], photoSources: [], sources: [], qualityIssueStates: {}, duplicateExcludedRecordIds: [], readinessRequirements: [] };
     const encoded = encodeState(state);
     expect(JSON.parse(encoded).schemaVersion).toBe(1);
-    expect(decodeState(encoded)).toEqual(state);
+    const restored = decodeState(encoded);
+    expect(restored.records[0].provenance?.origin).toBe("legacy");
+    expect(restored.sources.some((source) => source.id === "legacy:local-records")).toBe(true);
     expect(STORAGE_KEY).toBeTruthy();
   });
   it("rejects corrupted and unsupported saved state", () => {

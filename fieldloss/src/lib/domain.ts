@@ -1,4 +1,5 @@
-import type { Context, Draft, Evaluation, Quantity, ConfirmedRecord, Issue } from "./types";
+import type { Context, Draft, Evaluation, Quantity, ConfirmedRecord, Issue, RecordProvenance } from "./types";
+import { finalizeProvenance } from "./provenance";
 
 export function emptyQuantity(): Quantity { return { amount: null, unit: "kg", kgPerCrate: null }; }
 
@@ -76,14 +77,14 @@ export function evaluateDraft(draft: Draft): Evaluation {
   return { issues, incomingKg, affectedKg, lossKg: ready ? lossKg : null, lossPercent: ready ? Math.min(100, (lossKg / incomingKg) * 100) : null };
 }
 
-export function confirmDraft(draft: Draft, now = new Date().toISOString()): ConfirmedRecord {
+export function confirmDraft(draft: Draft, now = new Date().toISOString(), provenance: RecordProvenance | null = null): ConfirmedRecord {
   const result = evaluateDraft(draft);
   if (result.issues.length || result.incomingKg === null || result.affectedKg === null || result.lossKg === null || result.lossPercent === null) throw new Error("Resolve all missing or invalid information before confirming.");
   return {
     id: draft.id, context: { ...draft.context }, transcript: draft.transcript,
     incomingKg: result.incomingKg, affectedKg: result.affectedKg, allocations: draft.allocations.map((allocation) => ({ destination: allocation.destination, kg: normalizeQuantity(allocation.quantity)! })),
     lossKg: result.lossKg, lossPercent: result.lossPercent, cause: draft.cause?.trim() || null, measurement: draft.measurement,
-    evidence: { ...draft.evidence }, confirmedAt: now, isSample: false,
+    evidence: { ...draft.evidence }, provenance: finalizeProvenance(provenance, result.issues, now), confirmedAt: now, isSample: false,
   };
 }
 
