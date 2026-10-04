@@ -100,6 +100,13 @@ input[aria-invalid="true"] { border-color: var(--red); }
 .or-divider { display: flex; align-items: center; gap: 15px; margin: 22px 0 18px; font-size: 11px; color: var(--muted); }
 .or-divider:before, .or-divider:after { content: ""; background: var(--line); height: 1px; flex: 1; }
 .capture-actions { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.demo-scenarios { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.demo-scenarios h3 { font-size: 14px; letter-spacing: 0; }
+.demo-scenarios > p { margin-top: 7px; }
+.demo-scenario-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.demo-scenario-button { max-width: 100%; text-align: left; }
+.demo-scenario-button[aria-pressed="true"] { color: var(--teal); background: var(--pale-teal); border-color: var(--teal); }
+.demo-scenarios > .demo-scenario-hint { margin-top: 12px; }
 .capture-guide { padding-top: 5px; }
 .guide-illustration { border-bottom: 1px solid var(--line); padding: 16px 8px 27px; margin-bottom: 27px; }
 .guide-illustration svg { width: 100%; height: auto; }
